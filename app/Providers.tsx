@@ -17,13 +17,13 @@ function Providers({
             staleTime: 60 * 1000,
           },
         },
-      })
+      }),
   );
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false}/>
-      </QueryClientProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

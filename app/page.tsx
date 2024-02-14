@@ -7,7 +7,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
-  const router = useRouter()
+  const router = useRouter();
 
   const onSubmitFunc = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,12 +16,12 @@ export default function Home() {
       mode: "cors",
       credentials: "include",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email: email,
-        password: password
-      })
+        password: password,
+      }),
     })
       .then((res) => res.json())
       .then((res) => {
@@ -34,18 +34,20 @@ export default function Home() {
         }
       })
       .catch((err) => console.error(err));
-  }
+  };
 
   return (
-    <main className="max-w-5xl mx-auto flex flex-col justify-center items-center p-24">
-      <h1 className="text-4xl font-bold pb-6">Blog Content Portal</h1>
+    <main className="mx-auto flex max-w-5xl flex-col items-center justify-center p-24">
+      <h1 className="pb-6 text-4xl font-bold">Blog Content Portal</h1>
       {loginError ? <p>You got an error</p> : null}
       <form
-        className="border border-zinc-300 rounded-md px-6 py-8 flex flex-col gap-4"
+        className="flex flex-col gap-4 rounded-md border border-zinc-300 px-6 py-8"
         onSubmit={onSubmitFunc}
       >
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="font-semibold">Email:</label>
+          <label htmlFor="email" className="font-semibold">
+            Email:
+          </label>
           <input
             type="email"
             value={email}
@@ -53,12 +55,14 @@ export default function Home() {
             onChange={(event) => setEmail(event.target.value)}
             name="email"
             id="email"
-            className="border border-zinc-300 rounded-md py-2 px-4 text-base"
+            className="rounded-md border border-zinc-300 px-4 py-2 text-base"
             autoComplete="username"
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="font-semibold">Password:</label>
+          <label htmlFor="password" className="font-semibold">
+            Password:
+          </label>
           <input
             type="password"
             value={password}
@@ -66,11 +70,16 @@ export default function Home() {
             onChange={(event) => setPassword(event.target.value)}
             name="password"
             id="password"
-            className="border border-zinc-300 rounded-md py-2 px-4 text-base"
+            className="rounded-md border border-zinc-300 px-4 py-2 text-base"
             autoComplete="current-password"
           />
         </div>
-        <button type="submit" className="px-6 py-2 bg-indigo-600 text-zinc-50 rounded-md">Login</button>
+        <button
+          type="submit"
+          className="rounded-md bg-indigo-600 px-6 py-2 text-zinc-50"
+        >
+          Login
+        </button>
       </form>
     </main>
   );
