@@ -1,17 +1,14 @@
 "use client";
 import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import type { FormEvent, FormEventHandler } from "react";
+import { useState } from "react";
+import type { FormEventHandler } from "react";
 import { DateTime } from "luxon";
 
 function PostsPage({ params }: { params: { postId: string } }) {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
-  const [titleVal, setTitleVal] = useState("");
-  const [bodyVal, setBodyVal] = useState("");
-  const [publishedVal, setPublishedVal] = useState(false);
-  const { data, isLoading, isError, isSuccess } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["posts", params.postId],
     queryFn: async () => {
       const rawRes = await fetch(
@@ -44,19 +41,12 @@ function PostsPage({ params }: { params: { postId: string } }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts", params.postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: () => {
       console.log("there was an error in updating the document.");
     },
   });
-
-  useEffect(() => {
-    if (isSuccess) {
-      setTitleVal(he.decode(data.title));
-      setBodyVal(he.decode(data.body));
-      setPublishedVal(data.isPublished);
-    }
-  }, [isSuccess]);
 
   const onSubmitHandler: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -103,7 +93,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
                       name="title"
                       id="title"
                       className="rounded-md border border-zinc-300 px-4 py-2 text-base"
-                      defaultValue={titleVal}
+                      defaultValue={data.title ? he.decode(data.title) : ""}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -116,7 +106,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
                       cols={30}
                       rows={10}
                       className="rounded-md border border-zinc-300 px-4 py-2 text-base"
-                      defaultValue={bodyVal}
+                      defaultValue={data.body ? he.decode(data.body) : ""}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -128,9 +118,10 @@ function PostsPage({ params }: { params: { postId: string } }) {
                       name="isPublished"
                       id="isPublished"
                       className="h-4 w-4"
-                      checked={publishedVal}
+                      defaultChecked={
+                        data.isPublished ? data.isPublished : false
+                      }
                       value="true"
-                      onChange={() => setPublishedVal((bool) => !bool)}
                     />
                   </div>
                   <button
@@ -159,7 +150,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
                       )}
                     </p>
                   </div>
-                  <p>{he.decode(data.body)}</p>
+                  <p className="whitespace-pre-line">{he.decode(data.body)}</p>
                 </>
               )}
             </div>
