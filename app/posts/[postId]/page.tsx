@@ -156,7 +156,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
                   <h2 className="text-4xl font-semibold">
                     {he.decode(data.title)}
                   </h2>
-                  <div className="flex justify-evenly">
+                  <div className="flex flex-col">
                     <p className="text-sm text-zinc-800">
                       Created At:{" "}
                       {DateTime.fromISO(data.createdAt).toLocaleString(
@@ -168,6 +168,9 @@ function PostsPage({ params }: { params: { postId: string } }) {
                       {DateTime.fromISO(data.updatedAt).toLocaleString(
                         DateTime.DATETIME_MED,
                       )}
+                    </p>
+                    <p className="text-sm text-zinc-800">
+                      Published: {data.isPublished ? "True" : "False"}
                     </p>
                   </div>
                   <p className="whitespace-pre-line">{he.decode(data.body)}</p>
