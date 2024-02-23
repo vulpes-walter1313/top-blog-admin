@@ -85,6 +85,11 @@ function PostsPage() {
                   return !post.isPublished;
                 }
               })
+              .toSorted((a: any, b: any) => {
+                const aDate = new Date(a.updatedAt);
+                const bDate = new Date(b.updatedAt);
+                return bDate.getTime() - aDate.getTime();
+              })
               .map((post: PostType) => {
                 return (
                   <div
@@ -92,7 +97,12 @@ function PostsPage() {
                     className="flex flex-col items-start rounded-md border border-zinc-300 bg-zinc-50 px-4 py-6"
                   >
                     <h2 className="pb-2 text-3xl font-semibold text-zinc-900">
-                      {he.decode(post.title)}
+                      <Link
+                        href={`/posts/${post._id}`}
+                        className="hover:text-blue-700 hover:underline"
+                      >
+                        {he.decode(post.title)}
+                      </Link>
                     </h2>
                     <p className="pb-2 text-zinc-800">
                       {he.decode(post.body.slice(0, 80)) + "..."}
