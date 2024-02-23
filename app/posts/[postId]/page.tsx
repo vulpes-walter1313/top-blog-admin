@@ -4,8 +4,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { FormEventHandler } from "react";
 import { DateTime } from "luxon";
+import { useRouter } from "next/navigation";
 
 function PostsPage({ params }: { params: { postId: string } }) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const { data, isLoading, isError } = useQuery({
@@ -45,6 +47,24 @@ function PostsPage({ params }: { params: { postId: string } }) {
     },
     onError: () => {
       console.log("there was an error in updating the document.");
+    },
+  });
+
+  const deletePostMutation = useMutation({
+    mutationFn: () => {
+      return fetch(`http://localhost:3010/posts/${params.postId}`, {
+        method: "DELETE",
+        mode: "cors",
+        credentials: "include",
+      });
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["posts", params.postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      router.push("/posts");
+    },
+    onError: () => {
+      console.log("there was an error in deleting the document.");
     },
   });
 
@@ -178,6 +198,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
                   <button
                     type="button"
                     className="rounded-md bg-red-600 px-6 py-2 font-semibold text-zinc-50"
+                    onClick={() => deletePostMutation.mutate()}
                   >
                     Delete
                   </button>
