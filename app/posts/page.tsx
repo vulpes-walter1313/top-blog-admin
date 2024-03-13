@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import he from "he";
+import { useSearchParams } from "next/navigation";
+import PaginationLinks from "./PaginationLinks";
 
 type PostType = {
   _id: string;
@@ -18,19 +20,28 @@ type PostType = {
 };
 type FilterStateType = "all" | "published" | "unpublished";
 function PostsPage() {
+  const pageParams = useSearchParams() || 1;
   const [filterState, setFilterState] = useState<FilterStateType>("all");
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", `${pageParams.get("page") || "1"}`],
     queryFn: async () => {
-      const rawRes = await fetch("http://localhost:3010/posts", {
-        credentials: "include",
-        mode: "cors",
-      });
+      const rawRes = await fetch(
+        `http://localhost:3010/posts?page=${pageParams.get("page") || "1"}`,
+        {
+          credentials: "include",
+          mode: "cors",
+        },
+      );
       const data = await rawRes.json();
       if (data.success == false) {
         throw new Error("error getting data from /posts");
       }
-      return data.posts;
+      console.log(data);
+      return {
+        posts: data.posts,
+        totalPages: data.totalPages,
+        currentPage: data.currentPage,
+      };
     },
   });
 
@@ -74,7 +85,7 @@ function PostsPage() {
             </ul>
           </div>
           <div className="col-span-5 col-start-3 flex flex-col gap-4">
-            {data
+            {data?.posts
               ?.filter((post: PostType) => {
                 if (filterState === "all") {
                   return true;
@@ -117,6 +128,14 @@ function PostsPage() {
                 );
               })}
           </div>
+        </div>
+        <div className="py-4">
+          {data ? (
+            <PaginationLinks
+              totalPages={data.totalPages}
+              currentPage={parseInt(pageParams.get("page") || "1")}
+            />
+          ) : null}
         </div>
       </div>
     </div>
