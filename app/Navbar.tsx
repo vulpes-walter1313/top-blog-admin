@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 function Navbar() {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, status } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       const rawData = await fetch(`http://localhost:3010/currentuser`, {
@@ -39,7 +39,7 @@ function Navbar() {
     <nav className="border-b border-zinc-400">
       <div className="mx-auto flex max-w-4xl items-center justify-between py-4">
         <p className="text-3xl font-bold text-zinc-800">Blog Content</p>
-        {data ? (
+        {status === "success" && data ? (
           <ul className="flex items-center gap-4">
             <li>
               <Link href="/posts">Posts</Link>
