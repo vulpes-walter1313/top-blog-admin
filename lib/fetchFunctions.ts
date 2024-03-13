@@ -10,3 +10,11 @@ export const getUserStateFromServer = async () => {
     throw new Error("user is not logged in");
   }
 };
+
+export const logoutMutationFunc = () => {
+  return fetch("http://localhost:3010/logout", {
+    mode: "cors",
+    credentials: "include",
+    method: "GET",
+  });
+};
