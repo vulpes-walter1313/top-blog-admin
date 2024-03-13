@@ -105,7 +105,7 @@ export default function Home() {
         </form>
       ) : (
         <div>
-          <h2>You&apos;re already logged in.</h2>
+          <h2 className="text-3xl">You&apos;re already logged in.</h2>
           <Link
             href="/posts"
             className="rounded-md bg-indigo-600 px-6 py-2 font-semibold text-zinc-50"
