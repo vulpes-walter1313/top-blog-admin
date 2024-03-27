@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { FormEventHandler } from "react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
+import DisplayComments from "@/components/DisplayComments";
 
 function PostsPage({ params }: { params: { postId: string } }) {
   const router = useRouter();
@@ -29,6 +30,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
       }
     },
   });
+
   const mutation = useMutation({
     mutationFn: (payload: any) => {
       return fetch(`http://localhost:3010/posts/${params.postId}`, {
@@ -209,6 +211,7 @@ function PostsPage({ params }: { params: { postId: string } }) {
               )}
             </div>
           </div>
+          <DisplayComments postId={params.postId} />
         </div>
       ) : null}
     </main>
